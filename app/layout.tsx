@@ -7,6 +7,7 @@ import { Theme } from '@radix-ui/themes'
 import { Toaster } from 'react-hot-toast'
 
 import Navbar from './components/Navbar'
+import AuthProvider from './components/AuthProvider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,11 +23,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={inter.variable}>
-        <Theme appearance="light" accentColor="crimson">
-          <Navbar />
-          <main className="p-7 max-w-screen-2xl mx-auto">{children}</main>
-          <Toaster />
-        </Theme>
+        <AuthProvider>
+          <Theme appearance="light" accentColor="crimson">
+            <Navbar />
+            <main className="p-7 max-w-screen-2xl mx-auto">{children}</main>
+            <Toaster />
+          </Theme>
+        </AuthProvider>
       </body>
     </html>
   )

@@ -4,11 +4,14 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AiFillBug } from 'react-icons/ai'
+import AuthLinks from '../AuthLinks'
+import { useSession } from 'next-auth/react'
 
 type NavbarProps = {}
 
 const Navbar: React.FC<NavbarProps> = () => {
   const path = usePathname()
+  const { status, data } = useSession()
 
   return (
     <nav className="flex items-center justify-between border-b border-zinc-700 dark:border-zinc-300 px-6 h-16 max-w-screen-2xl mx-auto">
@@ -40,6 +43,7 @@ const Navbar: React.FC<NavbarProps> = () => {
             Issues
           </Link>
         </li>
+        <AuthLinks session={data} status={status} />
       </ul>
     </nav>
   )
