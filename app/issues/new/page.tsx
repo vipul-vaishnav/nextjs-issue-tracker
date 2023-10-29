@@ -8,17 +8,18 @@ import { useRouter } from 'next/navigation'
 import { Button, Callout, TextField } from '@radix-ui/themes'
 import { Controller, useForm } from 'react-hook-form'
 import { CiCircleInfo } from 'react-icons/ci'
+import { z } from 'zod'
+import toast from 'react-hot-toast'
 
 const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false })
 
 import 'easymde/dist/easymde.min.css'
 
 import { createIssueSchema } from '@/app/api/issues/route'
+import { Request } from '@/app/types/IRequest'
+import { Issue } from '@/app/types/IIssue'
 
-interface IssueForm {
-  title: string
-  description: string
-}
+type TForm = z.infer<typeof createIssueSchema>
 
 type NewIssuePageProps = {}
 
@@ -30,7 +31,7 @@ const NewIssuePage: React.FC<NewIssuePageProps> = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset
-  } = useForm<IssueForm>({
+  } = useForm<TForm>({
     defaultValues: {
       title: '',
       description: ''
@@ -39,9 +40,10 @@ const NewIssuePage: React.FC<NewIssuePageProps> = () => {
   })
   const router = useRouter()
 
-  const onSubmit = async (data: IssueForm) => {
+  const onSubmit = async (data: TForm) => {
     try {
-      const res = await axios.post('/api/issues', { ...data })
+      const res = await axios.post<Request<Issue>>('/api/issues', { ...data })
+      toast.success(`${res.data.message} with Id ${res.data.data.id}`)
       reset()
       router.push('/issues')
     } catch (error) {

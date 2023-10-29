@@ -4,6 +4,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Theme } from '@radix-ui/themes'
+import { Toaster } from 'react-hot-toast'
 
 import Navbar from './components/Navbar'
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Theme appearance="light" accentColor="crimson">
           <Navbar />
           <main className="p-7">{children}</main>
+          <Toaster />
         </Theme>
       </body>
     </html>
