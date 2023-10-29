@@ -40,6 +40,8 @@ const NewIssuePage: React.FC<NewIssuePageProps> = () => {
   })
   const router = useRouter()
 
+
+
   const onSubmit = async (data: TForm) => {
     try {
       const res = await axios.post<Request<Issue>>('/api/issues', { ...data })
