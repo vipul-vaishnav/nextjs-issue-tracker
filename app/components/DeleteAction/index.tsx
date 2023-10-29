@@ -16,9 +16,11 @@ type DeleteActionProps = {
 const DeleteAction: React.FC<DeleteActionProps> = ({ id, ...restProps }) => {
   const router = useRouter()
   const [err, setErr] = useState<string | undefined>(undefined)
+  const [loading, setLoading] = useState(false)
 
   const handleDelete = async () => {
     try {
+      setLoading(true)
       const res = await axios.delete<{ message: string }>('/api/issues/' + id)
       toast.success(`${res.data.message}`)
       router.push('/issues')
@@ -32,6 +34,7 @@ const DeleteAction: React.FC<DeleteActionProps> = ({ id, ...restProps }) => {
         setErr('An Unexpected Error Has Occured!')
       }
     } finally {
+      setLoading(false)
     }
   }
 
@@ -39,9 +42,15 @@ const DeleteAction: React.FC<DeleteActionProps> = ({ id, ...restProps }) => {
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger className="md:max-w-max">
-          <Button size="3" variant="soft" color="red" {...restProps}>
-            <MdDeleteOutline size={20} />
-            Delete Issue
+          <Button size="3" disabled={loading} variant="soft" color="red" {...restProps}>
+            {loading ? (
+              'Deleting...'
+            ) : (
+              <>
+                <MdDeleteOutline size={20} />
+                Delete Issue
+              </>
+            )}
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content>
@@ -57,8 +66,8 @@ const DeleteAction: React.FC<DeleteActionProps> = ({ id, ...restProps }) => {
               </Button>
             </AlertDialog.Cancel>
             <AlertDialog.Action>
-              <Button color="red" onClick={handleDelete}>
-                Delete Issue
+              <Button disabled={loading} color="red" onClick={handleDelete}>
+                {loading ? 'Deleting...' : 'Delete Issue'}
               </Button>
             </AlertDialog.Action>
           </Flex>
