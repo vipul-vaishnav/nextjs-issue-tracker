@@ -11,7 +11,7 @@ const Navbar: React.FC<NavbarProps> = () => {
   const path = usePathname()
 
   return (
-    <nav className="flex items-center justify-between border-b border-zinc-700 px-6 h-16 max-w-screen-2xl mx-auto">
+    <nav className="flex items-center justify-between border-b border-zinc-700 dark:border-zinc-300 px-6 h-16 max-w-screen-2xl mx-auto">
       <Link href="/">
         <AiFillBug size={24} className="inline-block align-bottom" />
 
