@@ -13,9 +13,12 @@ const Navbar: React.FC<NavbarProps> = () => {
   return (
     <nav className="flex items-center justify-between border-b border-zinc-700 dark:border-zinc-300 px-6 h-16 max-w-screen-2xl mx-auto">
       <Link href="/">
-        <AiFillBug size={24} className="inline-block align-bottom" />
+        <AiFillBug size={22} className="inline-block align-bottom text-pink-500" />
 
-        <span className="ml-3">Issue Tracker</span>
+        <span className="ml-3 font-extrabold uppercase tracking-widest">
+          <span className="text-pink-500">I</span>
+          track
+        </span>
       </Link>
 
       <ul className="flex items-center gap-6">

@@ -17,7 +17,7 @@ import 'easymde/dist/easymde.min.css'
 
 import { createIssueSchema } from '@/app/api/issues/route'
 import { Request } from '@/app/types/IRequest'
-import { Issue } from '@/app/types/IIssue'
+import { Issue } from '@prisma/client'
 
 type TForm = z.infer<typeof createIssueSchema>
 
