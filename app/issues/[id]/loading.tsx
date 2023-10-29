@@ -7,7 +7,9 @@ const LoadingIssueDetailPage: React.FC = (): React.ReactElement => {
     <Grid columns={{ initial: '1', sm: '8' }} gap="5">
       <Box className="md:col-span-6">
         <div className="space-y-4">
-          <Skeleton width={'25rem'} />
+          <div className="w-full max-w-md">
+            <Skeleton />
+          </div>
           <Flex gap="4">
             <Skeleton width={'5rem'} />
             <Skeleton width={'5rem'} />
@@ -19,6 +21,7 @@ const LoadingIssueDetailPage: React.FC = (): React.ReactElement => {
       </Box>
       <Box className="md:col-span-2">
         <Flex direction={'column'} gap="4">
+          <Skeleton className="w-full md:w-auto" />
           <Skeleton className="w-full md:w-auto" />
           <Skeleton className="w-full md:w-auto" />
         </Flex>

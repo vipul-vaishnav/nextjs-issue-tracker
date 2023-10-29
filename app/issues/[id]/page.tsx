@@ -10,6 +10,7 @@ import IssueDetails from '@/app/components/IssueDetails'
 import DeleteAction from '@/app/components/DeleteAction'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import AssigneeSelect from '@/app/components/AssigneeSelect'
 
 type IssueDetailPageProps = {
   params: { id: string }
@@ -46,6 +47,7 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
         <Flex direction={'column'} gap="4">
           {session && session.user && (
             <>
+              <AssigneeSelect />
               <EditAction id={issue.id} className="w-full md:w-auto" />
               <DeleteAction id={issue.id} className="w-full md:w-auto" />
             </>

@@ -20,7 +20,9 @@ const AuthLinks: React.FC<AuthLinksProps> = (props) => {
       {status === 'loading' && (
         <>
           <div className="w-9 h-9 animate-pulse bg-neutral-300 rounded-full"></div>
-          <Skeleton width={'5rem'} />
+          <div className="hidden sm:block">
+            <Skeleton width={'5rem'} />
+          </div>
         </>
       )}
 
@@ -43,7 +45,9 @@ const AuthLinks: React.FC<AuthLinksProps> = (props) => {
                 referrerPolicy="no-referrer"
               />
 
-              <Text>{session?.user?.name ?? ''}</Text>
+              <Text className="hidden sm:block" as="p">
+                {session?.user?.name ?? ''}
+              </Text>
             </Flex>
           </DropdownMenu.Trigger>
           <DropdownMenu.Content>
