@@ -11,13 +11,17 @@ import { CiCircleInfo } from 'react-icons/ci'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
 
-const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false })
-
 import 'easymde/dist/easymde.min.css'
 
 import { createIssueSchema } from '@/app/api/issues/route'
 import { Request } from '@/app/types/IRequest'
 import { Issue } from '@prisma/client'
+import Skeleton from '@/app/components/Skeleton'
+
+const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
+  ssr: false,
+  loading: () => <Skeleton height={320} />
+})
 
 type TForm = z.infer<typeof createIssueSchema>
 
@@ -40,14 +44,13 @@ const NewIssuePage: React.FC<NewIssuePageProps> = () => {
   })
   const router = useRouter()
 
-
-
   const onSubmit = async (data: TForm) => {
     try {
       const res = await axios.post<Request<Issue>>('/api/issues', { ...data })
       toast.success(`${res.data.message} with Id ${res.data.data.id}`)
       reset()
       router.push('/issues')
+      router.refresh()
     } catch (error) {
       if (error instanceof AxiosError) {
         setErr(error.response?.data.message ?? error.message)

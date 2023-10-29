@@ -12,8 +12,6 @@ import { z } from 'zod'
 import toast from 'react-hot-toast'
 import useSWR from 'swr'
 
-const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false })
-
 import 'easymde/dist/easymde.min.css'
 
 import { createIssueSchema } from '@/app/api/issues/route'
@@ -21,6 +19,12 @@ import { Request } from '@/app/types/IRequest'
 import { Issue } from '@prisma/client'
 
 import EditIssueLoading from './loading'
+import Skeleton from '@/app/components/Skeleton'
+
+const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
+  ssr: false,
+  loading: () => <Skeleton height={320} />
+})
 
 type TForm = z.infer<typeof createIssueSchema>
 
@@ -55,6 +59,7 @@ const EditIssuePage: React.FC<EditIssuePageProps> = ({ params: { id } }) => {
       toast.success(`${res.data.message}`)
       reset()
       router.push(`/issues/${issueData?.data.id}`)
+      router.refresh()
     } catch (error) {
       if (error instanceof AxiosError) {
         setErr(error.response?.data.message ?? error.message)
