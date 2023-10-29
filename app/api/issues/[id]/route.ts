@@ -1,6 +1,8 @@
 import prisma from '@/prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
 import { createIssueSchema } from '../route'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../../auth/[...nextauth]/route'
 
 type Args = {
   params: {
@@ -50,6 +52,16 @@ export async function GET(req: NextRequest, { params }: Args) {
 
 // UPDATE AN ISSUE
 export async function PUT(req: NextRequest, { params }: Args) {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        message: 'Unauthorised'
+      },
+      { status: 401, statusText: 'NOT OK' }
+    )
+  }
   const { id } = params
   const body = await req.json()
 
@@ -106,6 +118,16 @@ export async function PUT(req: NextRequest, { params }: Args) {
 
 // DELETE AN ISSUE
 export async function DELETE(req: NextRequest, { params }: Args) {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        message: 'Unauthorised'
+      },
+      { status: 401, statusText: 'NOT OK' }
+    )
+  }
   const { id } = params
 
   if (isNaN(parseInt(id))) {

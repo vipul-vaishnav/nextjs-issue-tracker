@@ -8,12 +8,15 @@ import { notFound } from 'next/navigation'
 import EditAction from '@/app/components/EditAction'
 import IssueDetails from '@/app/components/IssueDetails'
 import DeleteAction from '@/app/components/DeleteAction'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 type IssueDetailPageProps = {
   params: { id: string }
 }
 
 const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
+  const session = await getServerSession(authOptions)
   const {
     params: { id }
   } = props
@@ -41,8 +44,12 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
       </Box>
       <Box className="md:col-span-2">
         <Flex direction={'column'} gap="4">
-          <EditAction id={issue.id} className="w-full md:w-auto" />
-          <DeleteAction id={issue.id} className="w-full md:w-auto" />
+          {session && session.user && (
+            <>
+              <EditAction id={issue.id} className="w-full md:w-auto" />
+              <DeleteAction id={issue.id} className="w-full md:w-auto" />
+            </>
+          )}
         </Flex>
       </Box>
     </Grid>
