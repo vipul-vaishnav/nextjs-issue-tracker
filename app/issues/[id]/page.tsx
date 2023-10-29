@@ -1,11 +1,12 @@
-import StatusBadge from '@/app/components/StatusBadge'
+import React from 'react'
+import delay from 'delay'
 import prisma from '@/prisma/client'
 import { Issue } from '@prisma/client'
-import { Card, Flex, Heading, Text, Box } from '@radix-ui/themes'
-import delay from 'delay'
+import { Box, Grid } from '@radix-ui/themes'
 import { notFound } from 'next/navigation'
-import React from 'react'
-import Markdown from 'react-markdown'
+
+import EditAction from '@/app/components/EditAction'
+import IssueDetails from '@/app/components/IssueDetails'
 
 type IssueDetailPageProps = {
   params: { id: string }
@@ -33,19 +34,14 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
   }
 
   return (
-    <Box className="max-w-screen-sm mx-auto">
-      <div className="space-y-4">
-        <Heading as="h1">{issue.title}</Heading>
-
-        <Flex gap="4">
-          <StatusBadge status={issue.status} />
-          <Text>{new Date(issue.createdAt).toDateString()}</Text>
-        </Flex>
-      </div>
-      <Card className="prose mt-12">
-        <Markdown>{issue.description}</Markdown>
-      </Card>
-    </Box>
+    <Grid columns={{ initial: '1', md: '2' }} gap="3">
+      <Box>
+        <IssueDetails issue={issue}/>
+      </Box>
+      <Box>
+        <EditAction id={issue.id} />
+      </Box>
+    </Grid>
   )
 }
 export default IssueDetailPage

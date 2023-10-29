@@ -10,8 +10,6 @@ export const createIssueSchema = z.object({
 export async function POST(req: NextRequest) {
   const body = await req.json()
 
-  // return NextResponse.json({message: "Something went wrong"}, {status: 400})
-
   const validation = createIssueSchema.safeParse(body)
 
   if (!validation.success) {
