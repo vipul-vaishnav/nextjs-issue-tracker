@@ -6,9 +6,9 @@ type IssueActionsProps = {}
 
 const IssueActions: React.FC<IssueActionsProps> = () => {
   return (
-    <Button size={'3'}>
-      <Link href="/issues/new">Add New Issue</Link>
-    </Button>
+    <Link href="/issues/new">
+      <Button size={'3'}>Add New Issue</Button>
+    </Link>
   )
 }
 export default IssueActions

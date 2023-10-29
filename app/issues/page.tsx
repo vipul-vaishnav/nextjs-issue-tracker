@@ -34,7 +34,12 @@ const IssuesPage: React.FC<IssuesPageProps> = async () => {
               <Table.Cell className="font-medium hidden md:table-cell">{idx + 1}</Table.Cell>
               <Table.RowHeaderCell>
                 <div className="space-y-2 md:space-y-0">
-                  <span>{issue.title}</span>
+                  <Link
+                    href={`/issues/${issue.id}`}
+                    className="hover:text-pink-500 transition-all duration-300 hover:underline"
+                  >
+                    {issue.title}
+                  </Link>
                   <div className="block md:hidden">
                     <StatusBadge status={issue.status} />
                   </div>
