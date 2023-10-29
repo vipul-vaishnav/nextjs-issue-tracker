@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box } from '@radix-ui/themes'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton from '@/app/components/Skeleton'
 
 type LoadingNewIssueProps = {}
 
@@ -10,11 +9,11 @@ const LoadingNewIssue: React.FC<LoadingNewIssueProps> = () => {
     <Box>
       <div className="max-w-screen-sm space-y-4 mx-auto">
         <div>
-         <Skeleton/>
+          <Skeleton />
         </div>
 
         <div>
-          <Skeleton height={320}/>
+          <Skeleton height={320} />
         </div>
         <Skeleton />
       </div>
