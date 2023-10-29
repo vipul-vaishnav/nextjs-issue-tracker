@@ -1,20 +1,13 @@
-import { Button, Table } from '@radix-ui/themes'
+import { Table } from '@radix-ui/themes'
 import React from 'react'
-import Link from 'next/link'
-import prisma from '@/prisma/client'
-import { Issue } from '@prisma/client'
-import delay from 'delay'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
-import StatusBadge from '../components/StatusBadge'
 import IssueActions from '../components/IssueActions'
 
-type IssuesPageProps = {}
+type LoadingIssuesProps = {}
 
-const IssuesPage: React.FC<IssuesPageProps> = async () => {
-  const issues: Issue[] = await prisma.issue.findMany()
-
-  await delay(3000)
-
+const LoadingIssues: React.FC<LoadingIssuesProps> = () => {
   return (
     <div className="space-y-5">
       <IssueActions />
@@ -29,22 +22,22 @@ const IssuesPage: React.FC<IssuesPageProps> = async () => {
         </Table.Header>
 
         <Table.Body>
-          {issues.map((issue, idx) => (
+          {Array.from({ length: 7 }).map((_, idx) => (
             <Table.Row key={idx}>
               <Table.Cell className="font-medium hidden md:table-cell">{idx + 1}</Table.Cell>
               <Table.RowHeaderCell>
                 <div className="space-y-2 md:space-y-0">
-                  <span>{issue.title}</span>
+                  <Skeleton />
                   <div className="block md:hidden">
-                    <StatusBadge status={issue.status} />
+                    <Skeleton />{' '}
                   </div>
                 </div>
               </Table.RowHeaderCell>
               <Table.Cell className="hidden md:table-cell">
-                <StatusBadge status={issue.status} />
+                <Skeleton />{' '}
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {new Date(issue.createdAt).toISOString().split('T')[0]}
+                <Skeleton />{' '}
               </Table.Cell>
             </Table.Row>
           ))}
@@ -53,4 +46,4 @@ const IssuesPage: React.FC<IssuesPageProps> = async () => {
     </div>
   )
 }
-export default IssuesPage
+export default LoadingIssues

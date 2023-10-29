@@ -13,11 +13,11 @@ const StatusMap: Record<Status, { label: string; type: 'orange' | 'crimson' | 'g
   },
   CLOSED: {
     label: 'Closed',
-    type: 'crimson'
+    type: 'green'
   },
   IN_PROGRESS: {
     label: 'In Progress',
-    type: 'green'
+    type: 'crimson'
   }
 }
 
