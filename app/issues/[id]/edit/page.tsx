@@ -10,7 +10,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { CiCircleInfo } from 'react-icons/ci'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
-import useSWR from 'swr'
+import { useQuery } from '@tanstack/react-query'
 
 import 'easymde/dist/easymde.min.css'
 
@@ -20,6 +20,8 @@ import { Issue } from '@prisma/client'
 
 import EditIssueLoading from './loading'
 import Skeleton from '@/app/components/Skeleton'
+
+import { getIssueWithId } from '@/app/handlers/getIssueWithId'
 
 const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
   ssr: false,
@@ -32,11 +34,18 @@ type EditIssuePageProps = {
   params: { id: string }
 }
 
-const fetcher = (url: string) => axios.get(url).then((res) => res.data)
-
 const EditIssuePage: React.FC<EditIssuePageProps> = ({ params: { id } }) => {
   const [err, setErr] = useState<string | undefined>(undefined)
-  const { data: issueData, isLoading, error } = useSWR<Request<Issue>>(`/api/issues/${id}`, fetcher)
+  const [key, func] = getIssueWithId(id)
+  const {
+    data: issueData,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: key,
+    queryFn: func
+  })
+
   const {
     register,
     control,
@@ -51,6 +60,7 @@ const EditIssuePage: React.FC<EditIssuePageProps> = ({ params: { id } }) => {
     },
     resolver: zodResolver(createIssueSchema)
   })
+
   const router = useRouter()
 
   const onSubmit = async (data: TForm) => {
@@ -82,7 +92,7 @@ const EditIssuePage: React.FC<EditIssuePageProps> = ({ params: { id } }) => {
     return <EditIssueLoading />
   }
 
-  if (error) {
+  if (isError) {
     return notFound()
   }
 

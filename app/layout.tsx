@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast'
 
 import Navbar from './components/Navbar'
 import AuthProvider from './components/AuthProvider'
+import QueryClientProvider from './components/QueryClientProvider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,13 +24,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={inter.variable}>
-        <AuthProvider>
-          <Theme appearance="light" accentColor="crimson">
-            <Navbar />
-            <main className="p-7 max-w-screen-2xl mx-auto">{children}</main>
-            <Toaster />
-          </Theme>
-        </AuthProvider>
+        <QueryClientProvider>
+          <AuthProvider>
+            <Theme appearance="light" accentColor="crimson">
+              <Navbar />
+              <main className="p-7 max-w-screen-2xl mx-auto">{children}</main>
+              <Toaster />
+            </Theme>
+          </AuthProvider>
+        </QueryClientProvider>
       </body>
     </html>
   )
