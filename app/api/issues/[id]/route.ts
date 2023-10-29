@@ -8,6 +8,7 @@ type Args = {
   }
 }
 
+// GET AN ISSUE
 export async function GET(req: NextRequest, { params }: Args) {
   const { id } = params
 
@@ -47,6 +48,7 @@ export async function GET(req: NextRequest, { params }: Args) {
   )
 }
 
+// UPDATE AN ISSUE
 export async function PUT(req: NextRequest, { params }: Args) {
   const { id } = params
   const body = await req.json()
@@ -97,6 +99,49 @@ export async function PUT(req: NextRequest, { params }: Args) {
     {
       message: 'Issue updated successfully',
       data: updatedIssue
+    },
+    { status: 200, statusText: 'OK' }
+  )
+}
+
+// DELETE AN ISSUE
+export async function DELETE(req: NextRequest, { params }: Args) {
+  const { id } = params
+
+  if (isNaN(parseInt(id))) {
+    return NextResponse.json(
+      {
+        message: 'Invalid Id'
+      },
+      { status: 400, statusText: 'NOT OK' }
+    )
+  }
+
+  const issue = await prisma.issue.findUnique({
+    where: {
+      id: parseInt(id)
+    }
+  })
+
+  if (!issue) {
+    return NextResponse.json(
+      {
+        message: 'Issue not found'
+      },
+      {
+        status: 404,
+        statusText: 'NOT OK'
+      }
+    )
+  }
+
+  await prisma.issue.delete({
+    where: { id: parseInt(id) }
+  })
+
+  return NextResponse.json(
+    {
+      message: 'Issue deleted successfully'
     },
     { status: 200, statusText: 'OK' }
   )

@@ -4,8 +4,8 @@ import Skeleton from '@/app/components/Skeleton'
 
 const LoadingIssueDetailPage: React.FC = (): React.ReactElement => {
   return (
-    <Grid columns={{ initial: '1', md: '2' }} gap="3">
-      <Box>
+    <Grid columns={{ initial: '1', sm: '8' }} gap="5">
+      <Box className="md:col-span-6">
         <div className="space-y-4">
           <Skeleton width={'25rem'} />
           <Flex gap="4">
@@ -17,8 +17,11 @@ const LoadingIssueDetailPage: React.FC = (): React.ReactElement => {
           <Skeleton count={4} />
         </Card>
       </Box>
-      <Box>
-        <Skeleton width={"8rem"}/>
+      <Box className="md:col-span-2">
+        <Flex direction={'column'} gap="4">
+          <Skeleton className="w-full md:w-auto" />
+          <Skeleton className="w-full md:w-auto" />
+        </Flex>
       </Box>
     </Grid>
   )

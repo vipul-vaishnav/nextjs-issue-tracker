@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.variable}>
         <Theme appearance="light" accentColor="crimson">
           <Navbar />
-          <main className="p-7">{children}</main>
+          <main className="p-7 max-w-screen-2xl mx-auto">{children}</main>
           <Toaster />
         </Theme>
       </body>

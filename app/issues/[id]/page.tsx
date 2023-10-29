@@ -2,11 +2,12 @@ import React from 'react'
 import delay from 'delay'
 import prisma from '@/prisma/client'
 import { Issue } from '@prisma/client'
-import { Box, Grid } from '@radix-ui/themes'
+import { Box, Flex, Grid } from '@radix-ui/themes'
 import { notFound } from 'next/navigation'
 
 import EditAction from '@/app/components/EditAction'
 import IssueDetails from '@/app/components/IssueDetails'
+import DeleteAction from '@/app/components/DeleteAction'
 
 type IssueDetailPageProps = {
   params: { id: string }
@@ -34,12 +35,15 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
   }
 
   return (
-    <Grid columns={{ initial: '1', md: '2' }} gap="3">
-      <Box>
-        <IssueDetails issue={issue}/>
+    <Grid columns={{ initial: '1', sm: '8' }} gap="5">
+      <Box className="md:col-span-6">
+        <IssueDetails issue={issue} />
       </Box>
-      <Box>
-        <EditAction id={issue.id} />
+      <Box className="md:col-span-2">
+        <Flex direction={'column'} gap="4">
+          <EditAction id={issue.id} className="w-full md:w-auto" />
+          <DeleteAction id={issue.id} className="w-full md:w-auto" />
+        </Flex>
       </Box>
     </Grid>
   )

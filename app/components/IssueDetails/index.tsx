@@ -22,7 +22,7 @@ const IssueDetails: React.FC<IssueDetailsProps> = (props) => {
           <Text>{new Date(issue.createdAt).toDateString()}</Text>
         </Flex>
       </div>
-      <Card className="prose mt-12 w-full">
+      <Card className="prose mt-8 max-w-full">
         <Markdown>{issue.description}</Markdown>
       </Card>
     </React.Fragment>

@@ -4,7 +4,7 @@ import axios, { AxiosError } from 'axios'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
+import { notFound, useRouter } from 'next/navigation'
 import { Button, Callout, TextField } from '@radix-ui/themes'
 import { Controller, useForm } from 'react-hook-form'
 import { CiCircleInfo } from 'react-icons/ci'
@@ -80,6 +80,10 @@ const EditIssuePage: React.FC<EditIssuePageProps> = ({ params: { id } }) => {
 
   if (isLoading) {
     return <EditIssueLoading />
+  }
+
+  if (error) {
+    return notFound()
   }
 
   return (
