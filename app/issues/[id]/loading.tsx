@@ -21,9 +21,9 @@ const LoadingIssueDetailPage: React.FC = (): React.ReactElement => {
       </Box>
       <Box className="md:col-span-2">
         <Flex direction={'column'} gap="4">
-          <Skeleton className="w-full md:w-auto" />
-          <Skeleton className="w-full md:w-auto" />
-          <Skeleton className="w-full md:w-auto" />
+          <Skeleton className="w-full md:w-auto" height={30} />
+          <Skeleton className="w-full md:w-auto" height={30} />
+          <Skeleton className="w-full md:w-auto" height={30} />
         </Flex>
       </Box>
     </Grid>

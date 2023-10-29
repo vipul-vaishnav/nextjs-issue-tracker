@@ -32,8 +32,6 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
     }
   })
 
-  await delay(3500)
-
   if (!issue) {
     return notFound()
   }
@@ -47,7 +45,7 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
         <Flex direction={'column'} gap="4">
           {session && session.user && (
             <>
-              <AssigneeSelect />
+              <AssigneeSelect id={issue.id} assignedTo={issue.assignedToUserId} />
               <EditAction id={issue.id} className="w-full md:w-auto" />
               <DeleteAction id={issue.id} className="w-full md:w-auto" />
             </>

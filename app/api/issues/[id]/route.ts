@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createIssueSchema } from '../route'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../auth/[...nextauth]/route'
+import { z } from 'zod'
 
 type Args = {
   params: {
@@ -50,6 +51,12 @@ export async function GET(req: NextRequest, { params }: Args) {
   )
 }
 
+const updateIssueSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(255).optional(),
+  description: z.string().min(1, 'Description is required').max(65535).optional(),
+  assignedToUserId: z.string().min(1, 'AssignedToUserId is required').max(255).optional().nullable()
+})
+
 // UPDATE AN ISSUE
 export async function PUT(req: NextRequest, { params }: Args) {
   const session = await getServerSession(authOptions)
@@ -65,7 +72,9 @@ export async function PUT(req: NextRequest, { params }: Args) {
   const { id } = params
   const body = await req.json()
 
-  const validation = createIssueSchema.safeParse(body)
+  const { title, description, assignedToUserId } = body
+
+  const validation = updateIssueSchema.safeParse(body)
 
   if (!validation.success) {
     return NextResponse.json(validation.error.format(), { status: 400, statusText: 'NOT OK' })
@@ -78,6 +87,23 @@ export async function PUT(req: NextRequest, { params }: Args) {
       },
       { status: 400, statusText: 'NOT OK' }
     )
+  }
+
+  if (assignedToUserId) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: assignedToUserId
+      }
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          message: "User doesn't exists, Invalid user id"
+        },
+        { status: 400, statusText: 'NOT OK' }
+      )
+    }
   }
 
   const issue = await prisma.issue.findUnique({
@@ -102,8 +128,9 @@ export async function PUT(req: NextRequest, { params }: Args) {
     where: { id: parseInt(id) },
     data: {
       ...issue,
-      title: body.title,
-      description: body.description
+      title: title,
+      description: description,
+      assignedToUserId: assignedToUserId
     }
   })
 
