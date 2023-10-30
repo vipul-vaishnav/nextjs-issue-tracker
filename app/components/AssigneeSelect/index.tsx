@@ -46,7 +46,7 @@ const AssigneeSelect: React.FC<AssigneeSelectProps> = ({ id, assignedTo }) => {
   }
 
   if (isLoading) {
-    return <Skeleton />
+    return <Skeleton height={'36px'} width={'180px'} />
   }
 
   if (isError) {

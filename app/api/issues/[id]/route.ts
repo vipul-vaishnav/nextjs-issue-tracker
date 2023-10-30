@@ -1,9 +1,9 @@
 import prisma from '@/prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
-import { createIssueSchema } from '../route'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../auth/[...nextauth]/route'
 import { z } from 'zod'
+import { Status } from '@prisma/client'
 
 type Args = {
   params: {
@@ -54,27 +54,30 @@ export async function GET(req: NextRequest, { params }: Args) {
 const updateIssueSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255).optional(),
   description: z.string().min(1, 'Description is required').max(65535).optional(),
-  assignedToUserId: z.string().min(1, 'AssignedToUserId is required').max(255).optional().nullable()
+  assignedToUserId: z.string().min(1, 'AssignedToUserId is required').max(255).optional().nullable(),
+  status: z.enum(['OPEN', 'CLOSED', 'IN_PROGRESS']).default('OPEN').optional()
 })
 
 // UPDATE AN ISSUE
 export async function PUT(req: NextRequest, { params }: Args) {
   const session = await getServerSession(authOptions)
 
-  if (!session) {
-    return NextResponse.json(
-      {
-        message: 'Unauthorised'
-      },
-      { status: 401, statusText: 'NOT OK' }
-    )
-  }
+  // if (!session) {
+  //   return NextResponse.json(
+  //     {
+  //       message: 'Unauthorised'
+  //     },
+  //     { status: 401, statusText: 'NOT OK' }
+  //   )
+  // }
+
   const { id } = params
   const body = await req.json()
-
-  const { title, description, assignedToUserId } = body
-
+  const { title, description, assignedToUserId, status } = body
   const validation = updateIssueSchema.safeParse(body)
+
+  const statuses = Object.values(Status)
+  const isStatusValid = statuses.includes(status)
 
   if (!validation.success) {
     return NextResponse.json(validation.error.format(), { status: 400, statusText: 'NOT OK' })
@@ -106,6 +109,15 @@ export async function PUT(req: NextRequest, { params }: Args) {
     }
   }
 
+  if (status && !isStatusValid) {
+    return NextResponse.json(
+      {
+        message: 'Invalid Status'
+      },
+      { status: 400, statusText: 'NOT OK' }
+    )
+  }
+
   const issue = await prisma.issue.findUnique({
     where: {
       id: parseInt(id)
@@ -130,7 +142,8 @@ export async function PUT(req: NextRequest, { params }: Args) {
       ...issue,
       title: title,
       description: description,
-      assignedToUserId: assignedToUserId
+      assignedToUserId: assignedToUserId,
+      status: status
     }
   })
 

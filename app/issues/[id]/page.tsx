@@ -1,5 +1,4 @@
 import React from 'react'
-import delay from 'delay'
 import prisma from '@/prisma/client'
 import { Issue } from '@prisma/client'
 import { Box, Flex, Grid } from '@radix-ui/themes'
@@ -11,6 +10,7 @@ import DeleteAction from '@/app/components/DeleteAction'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import AssigneeSelect from '@/app/components/AssigneeSelect'
+import IssueStatusSelect from '@/app/components/IssueStatusSelect'
 
 type IssueDetailPageProps = {
   params: { id: string }
@@ -46,6 +46,7 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
           {session && session.user && (
             <>
               <AssigneeSelect id={issue.id} assignedTo={issue.assignedToUserId} />
+              <IssueStatusSelect id={issue.id} status={issue.status} />
               <EditAction id={issue.id} className="w-full md:w-auto" />
               <DeleteAction id={issue.id} className="w-full md:w-auto" />
             </>
@@ -55,4 +56,5 @@ const IssueDetailPage: React.FC<IssueDetailPageProps> = async (props) => {
     </Grid>
   )
 }
+
 export default IssueDetailPage

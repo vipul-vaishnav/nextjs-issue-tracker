@@ -3,7 +3,6 @@ import React from 'react'
 import Link from 'next/link'
 import prisma from '@/prisma/client'
 import { Issue } from '@prisma/client'
-import delay from 'delay'
 
 import StatusBadge from '../components/StatusBadge'
 import IssueActions from '../components/IssueActions'
@@ -12,8 +11,6 @@ type IssuesPageProps = {}
 
 const IssuesPage: React.FC<IssuesPageProps> = async () => {
   const issues: Issue[] = await prisma.issue.findMany()
-
-  await delay(3000)
 
   return (
     <div className="space-y-5">
