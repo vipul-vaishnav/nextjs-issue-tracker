@@ -2,28 +2,38 @@
 
 import { Status } from '@prisma/client'
 import { Select } from '@radix-ui/themes'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 
-type IssueListFiltersProps = {}
+type IssueListFiltersProps = {
+  currStatus: Status | 'all'
+}
 
 const statuses = Object.values(Status)
 
-const IssueListFilters: React.FC<IssueListFiltersProps> = () => {
+const IssueListFilters: React.FC<IssueListFiltersProps> = ({ currStatus }) => {
   const router = useRouter()
+  const obj = useSearchParams()
 
   const handleRouteChange = (arg: Status | 'all') => {
-    if (arg === 'all') {
-      router.push('/issues')
-    } else if (statuses.includes(arg)) {
-      router.push('/issues?status=' + arg)
-    } else {
-      router.push('/issues')
+    const alreadyHasSearchParams = obj.get('orderBy')
+    const params = new URLSearchParams()
+
+    if (arg !== 'all' && statuses.includes(arg)) {
+      params.append('status', arg)
     }
+
+    if (alreadyHasSearchParams) {
+      params.append('orderBy', alreadyHasSearchParams)
+    }
+
+    const query = params.size ? '?' + params.toString() : ''
+
+    router.push('/issues' + query)
   }
 
   return (
-    <Select.Root size="3" defaultValue="all" onValueChange={(value: Status | 'all') => handleRouteChange(value)}>
+    <Select.Root size="3" defaultValue={currStatus} onValueChange={(value: Status | 'all') => handleRouteChange(value)}>
       <Select.Trigger />
       <Select.Content placeholder="Filter by status..." className="w-[180px]">
         <Select.Group>

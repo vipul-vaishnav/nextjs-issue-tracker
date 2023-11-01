@@ -1,37 +1,67 @@
-import { Button, Table } from '@radix-ui/themes'
+import { Table } from '@radix-ui/themes'
 import React from 'react'
 import Link from 'next/link'
 import prisma from '@/prisma/client'
+import { BsArrowUpShort } from 'react-icons/bs'
 import { Issue, Status } from '@prisma/client'
 
 import StatusBadge from '../components/StatusBadge'
 import IssueActions from '../components/IssueActions'
 
+type Col = {
+  label: string
+  hide: boolean
+  value?: keyof Issue
+}
+
+const COLUMNS: Array<Col> = [
+  { label: '', hide: true },
+  { label: 'Issue', hide: false, value: 'title' },
+  { label: 'Status', hide: true, value: 'status' },
+  { label: 'Created', hide: true, value: 'createdAt' }
+]
+
 type IssuesPageProps = {
-  searchParams: { status: Status }
+  searchParams: { status: Status; orderBy: keyof Issue }
 }
 
 const IssuesPage: React.FC<IssuesPageProps> = async (props) => {
   const {
-    searchParams: { status }
+    searchParams: { status, orderBy }
   } = props
 
   const issues: Issue[] = await prisma.issue.findMany({
     where: {
       status: Object.values(Status).includes(status) ? status : undefined
-    }
+    },
+    ...(orderBy &&
+      COLUMNS.some((col) => col.value === orderBy) && {
+        orderBy: {
+          [orderBy]: 'asc'
+        }
+      })
   })
 
   return (
     <div className="space-y-5">
-      <IssueActions />
+      <IssueActions currStatus={status ?? 'all'} />
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell className="hidden md:table-cell"></Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Issue</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">Status</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">Created At</Table.ColumnHeaderCell>
+            {COLUMNS.map((col, idx) => (
+              <Table.ColumnHeaderCell key={idx} className={col.hide ? 'hidden md:table-cell' : ''}>
+                <Link
+                  href={{
+                    query: { ...props.searchParams, orderBy: col.value }
+                  }}
+                >
+                  <span className="flex items-center gap-1">
+                    {col.label}
+                    {orderBy && col.value === orderBy && <BsArrowUpShort size={20} />}
+                  </span>
+                </Link>
+              </Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
 
@@ -56,7 +86,12 @@ const IssuesPage: React.FC<IssuesPageProps> = async (props) => {
                 <StatusBadge status={issue.status} />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {new Date(issue.createdAt).toISOString().split('T')[0]}
+                {new Date(issue.createdAt).toLocaleDateString('en-In', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit'
+                })}
               </Table.Cell>
             </Table.Row>
           ))}
