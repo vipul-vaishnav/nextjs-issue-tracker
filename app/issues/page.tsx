@@ -7,6 +7,7 @@ import { Issue, Status } from '@prisma/client'
 
 import StatusBadge from '../components/StatusBadge'
 import IssueActions from '../components/IssueActions'
+import Pagination from '../components/Pagination'
 
 type Col = {
   label: string
@@ -22,25 +23,35 @@ const COLUMNS: Array<Col> = [
 ]
 
 type IssuesPageProps = {
-  searchParams: { status: Status; orderBy: keyof Issue }
+  searchParams: { status: Status; orderBy: keyof Issue; page: string }
 }
 
 const IssuesPage: React.FC<IssuesPageProps> = async (props) => {
   const {
-    searchParams: { status, orderBy }
+    searchParams: { status, orderBy, page }
   } = props
 
+  const where = {
+    status: Object.values(Status).includes(status) ? status : undefined
+  }
+
+  const PAGE_SIZE = 10
+
+  const currPage = !isNaN(parseInt(page)) ? parseInt(page) : 1
+
   const issues: Issue[] = await prisma.issue.findMany({
-    where: {
-      status: Object.values(Status).includes(status) ? status : undefined
-    },
+    where,
     ...(orderBy &&
       COLUMNS.some((col) => col.value === orderBy) && {
         orderBy: {
           [orderBy]: 'asc'
         }
-      })
+      }),
+    skip: (currPage - 1) * PAGE_SIZE,
+    take: PAGE_SIZE
   })
+
+  const count = await prisma.issue.count({ where })
 
   return (
     <div className="space-y-5">
@@ -64,7 +75,6 @@ const IssuesPage: React.FC<IssuesPageProps> = async (props) => {
             ))}
           </Table.Row>
         </Table.Header>
-
         <Table.Body>
           {issues.map((issue, idx) => (
             <Table.Row key={idx}>
@@ -97,6 +107,7 @@ const IssuesPage: React.FC<IssuesPageProps> = async (props) => {
           ))}
         </Table.Body>
       </Table.Root>
+      <Pagination currPage={currPage} pageSize={PAGE_SIZE} itemCount={count} />
     </div>
   )
 }

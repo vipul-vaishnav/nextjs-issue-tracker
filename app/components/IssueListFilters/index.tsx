@@ -17,6 +17,7 @@ const IssueListFilters: React.FC<IssueListFiltersProps> = ({ currStatus }) => {
 
   const handleRouteChange = (arg: Status | 'all') => {
     const alreadyHasSearchParams = obj.get('orderBy')
+    const alreadyHasPageParams = obj.get('page')
     const params = new URLSearchParams()
 
     if (arg !== 'all' && statuses.includes(arg)) {
@@ -25,6 +26,10 @@ const IssueListFilters: React.FC<IssueListFiltersProps> = ({ currStatus }) => {
 
     if (alreadyHasSearchParams) {
       params.append('orderBy', alreadyHasSearchParams)
+    }
+
+    if (alreadyHasPageParams) {
+      params.append('page', alreadyHasPageParams)
     }
 
     const query = params.size ? '?' + params.toString() : ''
