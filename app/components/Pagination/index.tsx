@@ -21,12 +21,18 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  const pageParam = searchParams.get('page')
+
   const pageCount = Math.ceil(itemCount / pageSize)
 
   const changePage = (page: number) => {
     const params = new URLSearchParams(searchParams)
     params.set('page', page.toString())
     router.push('?' + params.toString())
+  }
+
+  if (pageParam && !isNaN(parseInt(pageParam)) && parseInt(pageParam) > pageCount) {
+    changePage(1)
   }
 
   if (pageCount <= 1) return null
